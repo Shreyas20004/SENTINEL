@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ThreatQueue } from './ThreatQueue';
 import { MetricsCard } from './MetricsCard';
 import { apiClient } from '../services/api';
@@ -72,7 +72,7 @@ export const CommandDashboard: React.FC = () => {
                 key={i}
                 className="aspect-video bg-slate-700 rounded border-2 border-slate-600 flex items-center justify-center text-sm text-slate-400"
               >
-                CAM-{i + 1:02d}
+                CAM-{String(i + 1).padStart(2, '0')}
               </div>
             ))}
           </div>

@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZIPMiddleware
 
-from app.api import incidents, alerts, metrics, zones, cameras, dispatch, reports
+from app.api import incidents, alerts, metrics, zones, cameras, dispatch, reports, websocket
 from app.core.config import settings
 from app.core.database import init_db
 from app.core.redis_client import redis_client
@@ -76,6 +76,7 @@ app.include_router(zones.router, prefix="/api/v1", tags=["zones"])
 app.include_router(cameras.router, prefix="/api/v1", tags=["cameras"])
 app.include_router(dispatch.router, prefix="/api/v1", tags=["dispatch"])
 app.include_router(reports.router, prefix="/api/v1", tags=["reports"])
+app.include_router(websocket.router, tags=["websocket"])
 
 
 @app.get("/")

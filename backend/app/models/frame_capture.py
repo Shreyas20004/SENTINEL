@@ -69,11 +69,66 @@ class RTSPCapture:
     
     def _capture_loop(self):
         """Capture frames from RTSP stream"""
-        # TODO: Implement in Phase 2
-        # import cv2
-        # cap = cv2.VideoCapture(self.rtsp_url)
-        # ...
-        pass
+        import cv2
+        import time
+        
+        cap = None
+        retry_count = 0
+        max_retries = 5
+        
+        try:
+            while self.is_running:
+                # Try to open stream if not open
+                if cap is None:
+                    logger.info(f"Attempting to open {self.camera_id}: {self.rtsp_url}")
+                    cap = cv2.VideoCapture(self.rtsp_url)
+                    
+                    # Set camera properties for better performance
+                    cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)  # Minimize buffer lag
+                    cap.set(cv2.CAP_PROP_FPS, self.fps)
+                    
+                    if not cap.isOpened():
+                        logger.error(f"Failed to open {self.camera_id}")
+                        retry_count += 1
+                        if retry_count > max_retries:
+                            logger.error(f"Max retries exceeded for {self.camera_id}")
+                            break
+                        time.sleep(5)  # Wait before retry
+                        continue
+                    
+                    logger.info(f"Successfully opened {self.camera_id}")
+                    retry_count = 0
+                
+                # Capture frame
+                ret, frame = cap.read()
+                
+                if not ret:
+                    logger.warning(f"Failed to read frame from {self.camera_id}")
+                    cap.release()
+                    cap = None
+                    continue
+                
+                # Store frame with metadata
+                self.frame_buffer.append({
+                    'frame': frame,
+                    'timestamp': datetime.now().isoformat(),
+                    'camera_id': self.camera_id,
+                    'shape': frame.shape
+                })
+                
+                self.frame_count += 1
+                self.last_frame_time = datetime.now()
+                
+                # Control FPS
+                frame_interval = 1.0 / self.fps
+                time.sleep(frame_interval)
+        
+        except Exception as e:
+            logger.error(f"Error in capture loop for {self.camera_id}: {e}")
+        finally:
+            if cap is not None:
+                cap.release()
+                logger.info(f"Released camera {self.camera_id}")
     
     def get_latest_frame(self) -> Optional[Dict]:
         """

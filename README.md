@@ -114,10 +114,10 @@ curl -X POST http://localhost:8000/api/v1/cameras \
 ## 📋 Implementation Roadmap
 
 ### Phase 1 — Foundation (Weeks 1–4) ✅ In Progress
-- [x] Docker Compose stack (FastAPI + PostgreSQL + Redis)
-- [x] OpenCV RTSP ingestion & frame pipeline
-- [x] YOLOv8 weights integration
-- [x] Basic REST API (GET /incidents, POST /alerts, GET /metrics)
+- [ ] Docker Compose stack (FastAPI + PostgreSQL + Redis)
+- [ ] OpenCV RTSP ingestion & frame pipeline
+- [ ] YOLOv8 weights integration
+- [ ] Basic REST API (GET /incidents, POST /alerts, GET /metrics)
 - [ ] React shell with placeholder dashboard
 - [ ] Database initialization script
 
